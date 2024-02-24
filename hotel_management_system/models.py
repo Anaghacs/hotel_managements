@@ -37,13 +37,14 @@ class Customer(User):
     def welcome(self):
         return "Only for users"
     
-@receiver(post_save, sender=Customer)
-def create_user_profile(sender, instance, created, **kwargs):
-    if created and instance.role == "CUSTOMER":
-        CustomerProfile.objects.create(user=instance)
+# @receiver(post_save, sender=User)
+# def create_user_profile(sender, instance, created, **kwargs):
+#     if created and instance.role == "CUSTOMER":
+#         CustomerProfile.objects.create(user=instance)
 
 class CustomerProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
+
     address = models.CharField(blank=True, max_length=100)
     place = models.CharField(blank=True, max_length=20)
     district = models.CharField(blank=True, max_length=20)
@@ -85,9 +86,15 @@ class HotelProfile(models.Model):
     approved = models.BooleanField(default=False)
 
 
-@receiver(post_save, sender=Hotel)
-def create_user_profile(sender, instance, created, **kwargs):
-    if created and instance.role == "HOTEL":
-        HotelProfile.objects.create(user=instance)
+# @receiver(post_save, sender=User)
+# def create_user_profile(sender, instance, created, **kwargs):
+#     if created and instance.role == "HOTEL":
+#         HotelProfile.objects.create(user=instance)
 
-      
+@receiver(post_save, sender=User)
+def create_user_profile(sender, instance, created, **kwargs):
+    if created:
+        if instance.role == User.Role.CUSTOMER:
+            CustomerProfile.objects.create(user=instance)
+        elif instance.role == User.Role.HOTEL:
+            HotelProfile.objects.create(user=instance)
