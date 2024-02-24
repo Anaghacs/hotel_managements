@@ -38,11 +38,6 @@ class Customer(User):
 
     def welcome(self):
         return "Only for users"
-    
-# @receiver(post_save, sender=User)
-# def create_user_profile(sender, instance, created, **kwargs):
-#     if created and instance.role == "CUSTOMER":
-#         CustomerProfile.objects.create(user=instance)
 
 class CustomerProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -67,31 +62,28 @@ class Hotel(User):
     place = models.CharField(blank=True, max_length=20)
     district = models.CharField(blank=True, max_length=20)
     state = models.CharField(blank=True, max_length=20)
-    email = models.EmailField(max_length=100, unique=True)
+    emails = models.EmailField(max_length=100, unique=True)
     phone = models.CharField(max_length = 12, unique = True)
     photo = models.ImageField(upload_to = 'media', blank = True, null = True)
 
     student = HotelManager()
-
-    class Meta:
-        proxy = True
 
     def welcome(self):
         return "Only for Hotels"
     
 
 
-class HotelProfile(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
-#     hotel_id = models.IntegerField(null = True, blank = True)
-    hotel_name = models.CharField(max_length = 20)      
-    address = models.CharField(blank=True, max_length=100)
-    place = models.CharField(blank=True, max_length=20)
-    district = models.CharField(blank=True, max_length=20)
-    state = models.CharField(blank=True, max_length=20)
-    email = models.EmailField(max_length=100, unique=True)
-    phone = models.CharField(max_length = 12, unique = True)
-    photo = models.ImageField(upload_to = 'media', blank = True, null = True)
+# class HotelProfile(models.Model):
+#     user = models.OneToOneField(User, on_delete=models.CASCADE)
+# #     hotel_id = models.IntegerField(null = True, blank = True)
+#     hotel_name = models.CharField(max_length = 20)      
+#     address = models.CharField(blank=True, max_length=100)
+#     place = models.CharField(blank=True, max_length=20)
+#     district = models.CharField(blank=True, max_length=20)
+#     state = models.CharField(blank=True, max_length=20)
+#     email = models.EmailField(max_length=100, unique=True)
+#     phone = models.CharField(max_length = 12, unique = True)
+#     photo = models.ImageField(upload_to = 'media', blank = True, null = True)
 
 
 # @receiver(post_save, sender=User)
@@ -105,7 +97,7 @@ def create_user_profile(sender, instance, created, **kwargs):
         if instance.role == User.Role.CUSTOMER:
             CustomerProfile.objects.create(user=instance)
         elif instance.role == User.Role.HOTEL:
-            HotelProfile.objects.create(user=instance)
+            Hotel.objects.create(user=instance)
 
 class Staff(User):
     base_role = User.Role.HOTEL

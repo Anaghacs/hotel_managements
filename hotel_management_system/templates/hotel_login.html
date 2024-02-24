@@ -1,0 +1,29 @@
+{% include 'base.html' %}
+{% include 'navigation.html' %}
+{% block content %}
+
+{% if error == "no" %}
+<script>
+      alert('logged in successfully!');
+      window.location = "{% url 'admin_dashboard' %}";
+</script>
+{% endif %}
+
+{% if error == "yes" %}
+<script>
+      alert('Invalid login ! try again.');
+</script>
+{% endif %}
+
+<div class="container">
+      <h1 class="text-center">Admin Login Page</h1>
+      <form method="POST">
+            {% csrf_token %}
+            <label>Admin Name</label><br>
+            <input type="text" name="uname" class="form-control"/><br>
+            <label>Password</label><br>
+            <input type="password" name="password" class="form-control"/><br>
+            <input type="submit" value="login" class="form-control btn btn-primary"/><br>
+      </form>
+</div>
+{% endblock content %}
